@@ -2,6 +2,7 @@ package com.example.practiceandroid
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import com.example.practiceandroid.databinding.LoginBinding
 
@@ -12,8 +13,8 @@ class MainActivity : AppCompatActivity() {
         var binding = LoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.login.setOnClickListener({
-            Toast.makeText(this, "account:${binding.account.text},password:${binding.password.text}", Toast.LENGTH_SHORT).show()
-        }
-        )
+            Toast.makeText(this, "正在开发中", Toast.LENGTH_SHORT).show()
+            Log.d("log","account:${binding.account.text},password:${binding.password.text}")
+        })
     }
 }
