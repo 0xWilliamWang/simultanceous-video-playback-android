@@ -2,17 +2,18 @@ package com.example.practiceandroid
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
 import android.widget.Toast
+import com.example.practiceandroid.databinding.LoginBinding
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var binding: LoginBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.login)
-
-        val loginBtn:Button = findViewById(R.id.login)
-        loginBtn.setOnClickListener(
-            {Toast.makeText(this,"正在开发中",Toast.LENGTH_SHORT).show()}
+        var binding = LoginBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        binding.login.setOnClickListener({
+            Toast.makeText(this, "account:${binding.account.text},password:${binding.password.text}", Toast.LENGTH_SHORT).show()
+        }
         )
     }
 }
