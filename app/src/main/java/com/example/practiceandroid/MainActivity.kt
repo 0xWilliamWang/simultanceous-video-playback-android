@@ -1,5 +1,6 @@
 package com.example.practiceandroid
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -13,8 +14,12 @@ class MainActivity : AppCompatActivity() {
         var binding = LoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.login.setOnClickListener({
-            Toast.makeText(this, "正在开发中", Toast.LENGTH_SHORT).show()
-            Log.d("log","account:${binding.account.text},password:${binding.password.text}")
+            if (binding.account.text.toString() == "wkx" && binding.password.text.toString() =="123"){
+                val intent = Intent(this,video::class.java)
+                startActivity(intent)
+            }else{
+                Toast.makeText(this,"账户或密码错误，请重试",Toast.LENGTH_SHORT).show()
+            }
         })
     }
 }
