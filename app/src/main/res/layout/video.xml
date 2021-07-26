@@ -11,6 +11,15 @@
         android:layout_height="wrap_content">
 
         <Button
+            android:id="@+id/video_select"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="#1e90ff"
+            android:text="@string/video_select"
+            android:textSize="24sp" />
+
+        <Button
             android:id="@+id/video_start"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

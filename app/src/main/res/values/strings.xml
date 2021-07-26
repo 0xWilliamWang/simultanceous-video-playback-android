@@ -4,7 +4,8 @@
     <string name="login">登录</string>
     <string name="account_tips">账户:</string>
     <string name="password_tips">密码:</string>
-    <string name="video_start">开始播放</string>
-    <string name="video_pause">暂停播放</string>
-    <string name="video_resume">重新播放</string>
+    <string name="video_select">选择</string>
+    <string name="video_start">开始</string>
+    <string name="video_pause">暂停</string>
+    <string name="video_resume">重新</string>
 </resources>
