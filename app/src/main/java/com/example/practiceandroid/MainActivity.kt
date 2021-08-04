@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import com.example.practiceandroid.databinding.LoginBinding
+import org.json.JSONException
+import org.json.JSONObject
 import java.io.*
 import java.lang.Exception
 import java.lang.StringBuilder
@@ -15,6 +17,12 @@ import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: LoginBinding
+    private fun loginFailTips() {
+        runOnUiThread {
+            Toast.makeText(this, "账户或密码错误，请重试", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     private fun loginVerify() {
         thread {
             var conn: HttpURLConnection? = null
@@ -25,11 +33,13 @@ class MainActivity : AppCompatActivity() {
                 conn.requestMethod = "POST"
                 conn.connectTimeout = 8000
                 conn.readTimeout = 8000
-                conn.setRequestProperty("Content-Type","application/json")
-                conn.setRequestProperty("Accept","application/json")
-                val out:OutputStream = conn.outputStream
-                val writer = BufferedWriter(OutputStreamWriter(out,"UTF-8"))
-                writer.write("{\"account\":\"WangKaixuan1\",\"password\":\"wkxpassword\"}")
+                conn.setRequestProperty("Content-Type", "application/json")
+                conn.setRequestProperty("Accept", "application/json")
+                val out: OutputStream = conn.outputStream
+                val writer = BufferedWriter(OutputStreamWriter(out, "UTF-8"))
+                val tmp1 = mapOf("account" to "WangKaixuan1", "password" to "wkxpasswor1d")
+                val params = JSONObject(tmp1)
+                writer.write(params.toString())
                 writer.flush()
                 writer.close()
                 out.close()
@@ -41,16 +51,20 @@ class MainActivity : AppCompatActivity() {
                         response.append(it)
                     }
                 }
-                Log.d("http", response.toString())
+                val tmp2 = JSONObject(response.toString())
+                val tmp3 = tmp2.getString("token")
+                Log.d("http", tmp3)
 
-                if (binding.account.text.toString() == "wkx" && binding.password.text.toString() == "123") {
+                if (tmp2.getBoolean("ok")) {
                     val intent = Intent(this, video::class.java)
                     startActivity(intent)
                 } else {
-                    Toast.makeText(this, "账户或密码错误，请重试", Toast.LENGTH_SHORT).show()
+                    loginFailTips()
                 }
+            } catch (e: JSONException) {
+                loginFailTips()
             } catch (e: Exception) {
-                e.printStackTrace()
+                loginFailTips()
             } finally {
                 conn?.disconnect()
             }
