@@ -41,4 +41,19 @@
         android:text="@string/login"
         android:layout_marginTop="30sp"
         android:layout_gravity="center"/>
+
+    <Button
+        android:id="@+id/send"
+        android:text="Send"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+        <TextView
+            android:id="@+id/response"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </ScrollView>
 </LinearLayout>
