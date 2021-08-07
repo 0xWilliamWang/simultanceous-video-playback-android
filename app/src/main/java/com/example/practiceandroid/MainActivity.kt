@@ -13,6 +13,7 @@ import java.lang.Exception
 import java.lang.StringBuilder
 import java.net.HttpURLConnection
 import java.net.URL
+import java.util.*
 import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity() {
@@ -28,7 +29,12 @@ class MainActivity : AppCompatActivity() {
             var conn: HttpURLConnection? = null
             try {
                 val response = StringBuilder()
-                val url = URL("http://192.168.50.174:18605/login/")
+
+                val config =this.assets.open("config.yml")
+                val proper = Properties()
+                proper.load(config)
+
+                val url = URL("${proper.getProperty("serverUrl")}/login/")
                 conn = url.openConnection() as HttpURLConnection
                 conn.requestMethod = "POST"
                 conn.connectTimeout = 8000
