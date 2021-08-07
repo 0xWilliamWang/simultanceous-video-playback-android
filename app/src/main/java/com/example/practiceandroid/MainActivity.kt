@@ -33,8 +33,9 @@ class MainActivity : AppCompatActivity() {
                 val config =this.assets.open("config.yml")
                 val proper = Properties()
                 proper.load(config)
-
-                val url = URL("${proper.getProperty("serverUrl")}/login/")
+                val tmp = "${proper.getProperty("serverUrl")}/login/"
+                Log.d("login url", tmp)
+                val url = URL(tmp)
                 conn = url.openConnection() as HttpURLConnection
                 conn.requestMethod = "POST"
                 conn.connectTimeout = 8000
@@ -43,9 +44,10 @@ class MainActivity : AppCompatActivity() {
                 conn.setRequestProperty("Accept", "application/json")
                 val out: OutputStream = conn.outputStream
                 val writer = BufferedWriter(OutputStreamWriter(out, "UTF-8"))
-                val tmp1 = mapOf("account" to "WangKaixuan1", "password" to "wkxpasswor1d")
-                val params = JSONObject(tmp1)
-                writer.write(params.toString())
+                val tmp1 = mapOf("account" to binding.account.text.toString(), "password" to binding.password.text.toString())
+                val params = JSONObject(tmp1).toString()
+                Log.d("login params", params)
+                writer.write(params)
                 writer.flush()
                 writer.close()
                 out.close()
@@ -68,8 +70,10 @@ class MainActivity : AppCompatActivity() {
                     loginFailTips()
                 }
             } catch (e: JSONException) {
+                Log.d("JSONException", e.toString())
                 loginFailTips()
             } catch (e: Exception) {
+                Log.d("Exception", e.toString())
                 loginFailTips()
             } finally {
                 conn?.disconnect()
@@ -80,7 +84,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        var binding = LoginBinding.inflate(layoutInflater)
+        binding = LoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         binding.login.setOnClickListener {
