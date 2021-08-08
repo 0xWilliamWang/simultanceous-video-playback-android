@@ -8,4 +8,6 @@
     <string name="video_start">开始</string>
     <string name="video_pause">暂停</string>
     <string name="video_resume">重新</string>
+    <string name="asMaster">主设备</string>
+    <string name="asSlave">从设备</string>
 </resources>

@@ -9,6 +9,21 @@ import androidx.activity.result.contract.ActivityResultContracts
 import com.example.practiceandroid.databinding.VideoBinding
 
 class video : AppCompatActivity() {
+    private var isMaster = false
+
+    fun onRadioButtonClicked(v: View) {
+        if (v is RadioButton) {
+            when (v.getId()) {
+                vb.radioMaster.id -> {
+                    isMaster = true
+                }
+                vb.radioSlave.id -> {
+                    isMaster = false
+                }
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val vb = VideoBinding.inflate(layoutInflater)
