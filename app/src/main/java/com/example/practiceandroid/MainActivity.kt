@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity() {
                 Log.d("http", tmp3)
 
                 if (tmp2.getBoolean("ok")) {
-                    val intent = Intent(this, video::class.java)
+                    val intent = Intent(this, VideoManager::class.java)
                     startActivity(intent)
                 } else {
                     loginFailTips()
