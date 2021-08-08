@@ -10,9 +10,9 @@ import java.util.*
 
 class ServerConn(urlstr: String) {
     private val url = URL(urlstr)
-    private var conn = url.openConnection() as HttpURLConnection
 
     public fun send(params: Map<String, String>): JSONObject {
+        val conn = url.openConnection() as HttpURLConnection
         conn.requestMethod = "POST"
         conn.connectTimeout = 8000
         conn.readTimeout = 8000

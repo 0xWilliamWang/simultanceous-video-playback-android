@@ -25,6 +25,7 @@ class VideoManager : AppCompatActivity() {
     lateinit var vb: VideoBinding
     private var isMaster = false
     private lateinit var serverConn: ServerConn
+    private var videoProgress: Int = 0
 
     fun onRadioButtonClicked(v: View) {
         if (v is RadioButton) {
@@ -68,6 +69,16 @@ class VideoManager : AppCompatActivity() {
                 vb.videoView.setVideoURI(result.data?.data)
             }
         }
+
+        Timer().schedule(object : TimerTask() {
+            override fun run() {
+                if (isMaster && vb.videoView.isPlaying) {
+                    videoProgress = vb.videoView.currentPosition
+                    updateProgress(account,String.format("%d", videoProgress),token)
+                    Log.d("videoProgress", String.format("%d", videoProgress))
+                }
+            }
+        }, 2000, 2000)
 
         vb.videoSelect.setOnClickListener {
             Log.d("log", "you click select")
@@ -117,6 +128,20 @@ class VideoManager : AppCompatActivity() {
         } catch (e: Exception) {
             Log.d("Exception", e.toString())
             loginFailTips()
+        }
+    }
+
+    private fun updateProgress(account: String?, progress: String, token: String?) {
+        try {
+            val tmp1 = mapOf(
+                "account" to account, "action" to "updateProgress", "progress" to progress, "token" to token
+            )
+            val res = serverConn.send(tmp1 as Map<String, String>)
+            Log.d("VideoManager.res", res.toString())
+        } catch (e: JSONException) {
+            Log.d("JSONException", e.toString())
+        } catch (e: Exception) {
+            Log.d("Exception", e.toString())
         }
     }
 
