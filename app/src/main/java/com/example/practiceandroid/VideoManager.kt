@@ -112,6 +112,19 @@ class VideoManager : AppCompatActivity() {
             }
         }
 
+        vb.preStep.setOnClickListener{
+            if (vb.videoView.isPlaying) {
+                val curr = vb.videoView.currentPosition
+                vb.videoView.seekTo(curr-10000)
+            }
+        }
+
+        vb.nextStep.setOnClickListener{
+            if (vb.videoView.isPlaying) {
+                val curr = vb.videoView.currentPosition
+                vb.videoView.seekTo(curr+10000)
+            }
+        }
 
     }
 
