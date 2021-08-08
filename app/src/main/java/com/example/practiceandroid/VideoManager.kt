@@ -49,7 +49,9 @@ class VideoManager : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         vb = VideoBinding.inflate(layoutInflater)
         setContentView(vb.root)
-
+        // intent实际上调用了 parent类的getIntent方法
+        val token = intent.getStringExtra("token")
+        val account = intent.getStringExtra("account")
         val config = this.assets.open("config.yml")
         val proper = Properties()
         proper.load(config)
@@ -59,12 +61,12 @@ class VideoManager : AppCompatActivity() {
             if (result.resultCode == Activity.RESULT_OK) {
                 val fileUri = result.data?.data
                 val sha1 = getVideoSha1(fileUri)
-                val tmp1 = mapOf(
-                    "account" to "wangkaixuan", "action" to "newSession", "videoSHA1" to sha1, "token" to "1481e789-dc8b-4ac5-afc6-e12c329d59f1"
-                )
                 thread {
                     try {
-                        val res = serverConn.send(tmp1)
+                        val tmp1 = mapOf(
+                            "account" to account, "action" to "newSession", "videoSHA1" to sha1, "token" to token
+                        )
+                        val res = serverConn.send(tmp1 as Map<String, String>)
                         Log.d("VideoManager.res", res.toString())
                     } catch (e: JSONException) {
                         Log.d("JSONException", e.toString())

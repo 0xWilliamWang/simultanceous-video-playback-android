@@ -44,7 +44,8 @@ class MainActivity : AppCompatActivity() {
                 conn.setRequestProperty("Accept", "application/json")
                 val out: OutputStream = conn.outputStream
                 val writer = BufferedWriter(OutputStreamWriter(out, "UTF-8"))
-                val tmp1 = mapOf("account" to binding.account.text.toString(), "password" to binding.password.text.toString())
+                val account = binding.account.text.toString()
+                val tmp1 = mapOf("account" to account, "password" to binding.password.text.toString())
                 val params = JSONObject(tmp1).toString()
                 Log.d("login params", params)
                 writer.write(params)
@@ -60,11 +61,12 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
                 val tmp2 = JSONObject(response.toString())
-                val tmp3 = tmp2.getString("token")
-                Log.d("http", tmp3)
-
+                val token = tmp2.getString("token")
                 if (tmp2.getBoolean("ok")) {
                     val intent = Intent(this, VideoManager::class.java)
+                    intent.putExtra("account",account)
+                    intent.putExtra("token",token)
+
                     startActivity(intent)
                 } else {
                     loginFailTips()
