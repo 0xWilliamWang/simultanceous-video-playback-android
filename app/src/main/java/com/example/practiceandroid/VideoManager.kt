@@ -62,19 +62,7 @@ class VideoManager : AppCompatActivity() {
                 val fileUri = result.data?.data
                 val sha1 = getVideoSha1(fileUri)
                 thread {
-                    try {
-                        val tmp1 = mapOf(
-                            "account" to account, "action" to "newSession", "videoSHA1" to sha1, "token" to token
-                        )
-                        val res = serverConn.send(tmp1 as Map<String, String>)
-                        Log.d("VideoManager.res", res.toString())
-                    } catch (e: JSONException) {
-                        Log.d("JSONException", e.toString())
-                        loginFailTips()
-                    } catch (e: Exception) {
-                        android.util.Log.d("Exception", e.toString())
-                        loginFailTips()
-                    }
+                    newSession(account, sha1, token)
                 }
 
                 vb.videoView.setVideoURI(result.data?.data)
@@ -114,6 +102,22 @@ class VideoManager : AppCompatActivity() {
         }
 
 
+    }
+
+    private fun newSession(account: String?, sha1: String, token: String?) {
+        try {
+            val tmp1 = mapOf(
+                "account" to account, "action" to "newSession", "videoSHA1" to sha1, "token" to token
+            )
+            val res = serverConn.send(tmp1 as Map<String, String>)
+            Log.d("VideoManager.res", res.toString())
+        } catch (e: JSONException) {
+            Log.d("JSONException", e.toString())
+            loginFailTips()
+        } catch (e: Exception) {
+            Log.d("Exception", e.toString())
+            loginFailTips()
+        }
     }
 
     private fun getVideoSha1(fileUri: Uri?): String {
