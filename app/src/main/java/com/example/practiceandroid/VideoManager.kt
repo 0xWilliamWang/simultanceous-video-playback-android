@@ -74,7 +74,8 @@ class VideoManager : AppCompatActivity() {
             override fun run() {
                 if (isMaster && vb.videoView.isPlaying) {
                     videoProgress = vb.videoView.currentPosition
-                    updateProgress(account,String.format("%d", videoProgress),token)
+                    vb.videoProgress.progress = videoProgress
+                    updateProgress(account, String.format("%d", videoProgress), token)
                     Log.d("videoProgress", String.format("%d", videoProgress))
                 }
             }
@@ -94,6 +95,7 @@ class VideoManager : AppCompatActivity() {
         vb.videoStart.setOnClickListener {
             Log.d("log", "you click start")
             if (!vb.videoView.isPlaying) {
+                vb.videoProgress.max = vb.videoView.duration
                 vb.videoView.start()
             }
         }
@@ -112,17 +114,17 @@ class VideoManager : AppCompatActivity() {
             }
         }
 
-        vb.preStep.setOnClickListener{
+        vb.preStep.setOnClickListener {
             if (vb.videoView.isPlaying) {
                 val curr = vb.videoView.currentPosition
-                vb.videoView.seekTo(curr-10000)
+                vb.videoView.seekTo(curr - 10000)
             }
         }
 
-        vb.nextStep.setOnClickListener{
+        vb.nextStep.setOnClickListener {
             if (vb.videoView.isPlaying) {
                 val curr = vb.videoView.currentPosition
-                vb.videoView.seekTo(curr+10000)
+                vb.videoView.seekTo(curr + 10000)
             }
         }
 
