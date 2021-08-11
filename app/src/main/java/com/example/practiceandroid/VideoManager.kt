@@ -18,6 +18,7 @@ import java.security.DigestInputStream
 import java.security.MessageDigest
 import java.util.*
 import kotlin.concurrent.thread
+import kotlin.math.abs
 import kotlin.properties.Delegates
 import kotlin.text.StringBuilder as StringBuilder1
 
@@ -26,6 +27,8 @@ class VideoManager : AppCompatActivity() {
     private var isMaster = false
     private lateinit var serverConn: ServerConn
     private var videoProgress: Int = 0
+    lateinit var SERVER_URL: String
+    private var isSelectedVideo = false
 
     fun onRadioButtonClicked(v: View) {
         if (v is RadioButton) {
@@ -56,17 +59,21 @@ class VideoManager : AppCompatActivity() {
         val config = this.assets.open("config.yml")
         val proper = Properties()
         proper.load(config)
-        val tmp = "${proper.getProperty("serverUrl")}/status/"
-        serverConn = ServerConn(tmp)
+        SERVER_URL = "${proper.getProperty("serverUrl")}"
+        serverConn = ServerConn("${SERVER_URL}/status/")
         val videoSelectLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val fileUri = result.data?.data
                 val sha1 = getVideoSha1(fileUri)
                 thread {
-                    newSession(account, sha1, token)
+                    if (isMaster) {
+                        newSession(account, sha1, token)
+                    } else {
+                        joinSession(account, sha1, token)
+                    }
                 }
-
                 vb.videoView.setVideoURI(result.data?.data)
+                isSelectedVideo = true;
             }
         }
 
@@ -77,6 +84,12 @@ class VideoManager : AppCompatActivity() {
                     vb.videoProgress.progress = videoProgress
                     updateProgress(account, String.format("%d", videoProgress), token)
                     Log.d("videoProgress", String.format("%d", videoProgress))
+                }
+                if (!isMaster && isSelectedVideo) {
+                    val progress = getProgress(account, token);
+                    if (progress != 0 && abs(vb.videoView.currentPosition - progress) > 10) {
+                        vb.videoView.seekTo(progress+5);
+                    }
                 }
             }
         }, 2000, 2000)
@@ -146,6 +159,23 @@ class VideoManager : AppCompatActivity() {
         }
     }
 
+    private fun joinSession(account: String?, sha1: String, token: String?) {
+        try {
+            val tmp1 = mapOf(
+                // TODO master
+                "account" to account, "master" to "wangkaixuan", "action" to "joinSession", "videoSHA1" to sha1, "token" to token
+            )
+            val res = serverConn.send(tmp1 as Map<String, String>)
+            Log.d("VideoManager.res", res.toString())
+        } catch (e: JSONException) {
+            Log.d("JSONException", e.toString())
+            loginFailTips()
+        } catch (e: Exception) {
+            Log.d("Exception", e.toString())
+            loginFailTips()
+        }
+    }
+
     private fun updateProgress(account: String?, progress: String, token: String?) {
         try {
             val tmp1 = mapOf(
@@ -158,6 +188,22 @@ class VideoManager : AppCompatActivity() {
         } catch (e: Exception) {
             Log.d("Exception", e.toString())
         }
+    }
+
+    private fun getProgress(account: String, token: String?): Int {
+        try {
+            val queryString = "action=sessionProgress&account=${account}&token=${token}&master=wangkaixuan"
+            val url = "${SERVER_URL}/status/?${queryString}"
+//            Log.d("getProgress",url)
+            val res = serverConn.get(url)
+            return res.getInt("progress")
+        } catch (e: JSONException) {
+            Log.d("JSONException", e.toString())
+        } catch (e: Exception) {
+            Log.d("Exception", e.toString())
+        }
+
+        return 0
     }
 
     private fun getVideoSha1(fileUri: Uri?): String {

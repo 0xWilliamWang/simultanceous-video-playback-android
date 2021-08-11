@@ -39,4 +39,23 @@ class ServerConn(urlstr: String) {
         Log.d("ServerConn.resData", res.toString())
         return res
     }
+
+     fun get(urlstr: String): JSONObject {
+         val url = URL(urlstr)
+         val conn = url.openConnection() as HttpURLConnection
+        conn.connectTimeout = 8000
+        conn.readTimeout = 8000
+
+        val input = conn.inputStream
+        val reader = BufferedReader(InputStreamReader(input))
+        val response = StringBuilder()
+        reader.use {
+            reader.forEachLine {
+                response.append(it)
+            }
+        }
+        val res = JSONObject(response.toString())
+        Log.d("ServerConn.get", res.toString())
+        return res
+    }
 }
